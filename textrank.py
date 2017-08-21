@@ -51,7 +51,8 @@ def load_file(filename, stop_word=None, window=2):
             for w1, w2 in zip(words[:-1], words[1:]):
                 if w1 not in word2index or w2 not in word2index:
                     continue
-                cooc_count[(word2index[w1], word2index[w2])] += 1
+                index1, index2 = min(word2index[w1], word2index[w2]), max(word2index[w1], word2index[w2])
+                cooc_count[(index1, index2)] += 1
 
     return index2word, cooc_count
 
