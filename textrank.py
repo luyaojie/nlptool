@@ -56,13 +56,18 @@ def load_file(filename, stop_word=None, window=2):
 
 
 def main():
-    index2word, cooc_count = load_file(sys.argv[1])
+    index2word, cooc_count = load_file(sys.argv[1], stop_word={u"，", u"。", u"？"})
     vertex_weight = np.random.random(size=(len(index2word)))
     edge_weight = np.zeros((len(index2word), len(index2word)))
     for (index1, index2), count in iteritems(cooc_count):
         edge_weight[index1, index2] = count
         edge_weight[index2, index1] = count
-    pagerank(vertex_weight, edge_weight)
+    final_weight = pagerank(vertex_weight, edge_weight)
+    word_weight = [(final_weight[i], index2word[i]) for i in range(final_weight.shape[0])]
+    word_weight.sort(reverse=True)
+    with codecs.open("test.out", 'w', 'utf8') as out:
+        for weight, word in word_weight:
+            out.write("%s\t%s\n" % (word, weight))
 
 
 if __name__ == "__main__":
