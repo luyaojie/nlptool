@@ -46,11 +46,11 @@ def load_file(filename, stop_word=None, window=2):
     with codecs.open(filename, 'r', 'utf8') as fin:
         for line in fin:
             words = line.strip().split()
-            for word in words:
-                add_word(word)
             for w1, w2 in zip(words[:-1], words[1:]):
-                if w1 not in word2index or w2 not in word2index:
+                if w1 in stop_word or w2 in stop_word:
                     continue
+                add_word(w1)
+                add_word(w2)
                 index1, index2 = min(word2index[w1], word2index[w2]), max(word2index[w1], word2index[w2])
                 cooc_count[(index1, index2)] += 1
 
