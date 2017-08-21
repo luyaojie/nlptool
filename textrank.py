@@ -36,6 +36,8 @@ def load_file(filename, stop_word=None, window=2):
     cooc_count = defaultdict(int)
 
     def add_word(_w):
+        if _w in stop_word:
+            return
         if _w not in word2index:
             index = len(word2index)
             word2index[_w] = index
@@ -47,9 +49,8 @@ def load_file(filename, stop_word=None, window=2):
             for word in words:
                 add_word(word)
             for w1, w2 in zip(words[:-1], words[1:]):
-                if stop_word is not None:
-                    if w1 in stop_word or w2 in stop_word:
-                        continue
+                if w1 not in word2index or w2 not in word2index:
+                    continue
                 cooc_count[(word2index[w1], word2index[w2])] += 1
 
     return index2word, cooc_count
