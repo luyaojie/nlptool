@@ -77,7 +77,7 @@ if __name__ == "__main__":
                 try:
                     result = segger.segment(line, pos=args.pos)
                     if args.pos:
-                        seg_result = u" ".join(["/".join(r) for r in result])
+                        seg_result = u" ".join(["/".join([r[0], r[1].replace(' ', '_')]) for r in result])
                     else:
                         seg_result = u" ".join(result)
                     to_write = seg_result + '\n'
