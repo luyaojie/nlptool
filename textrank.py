@@ -48,6 +48,8 @@ def load_file(filename, stop_word=None, stop_pos=None):
             words = line.strip().split()
             for _w1, _w2 in zip(words[:-1], words[1:]):
                 if stop_pos is not None:
+                    if '/' not in _w1 or '/' not in _w2:
+                        continue
                     w1, pos1 = _w1.split('/')
                     w2, pos2 = _w2.split('/')
                     if pos1 in stop_pos or pos2 in stop_pos:
