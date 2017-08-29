@@ -25,6 +25,8 @@ class ChineseWordSegmentor(object):
             import pynlpir
             pynlpir.open()
             self.segmentor = pynlpir
+        elif model.lower() == 'tochar':
+            self.segmentor = None
         else:
             raise NotImplementedError
 
@@ -48,6 +50,11 @@ class ChineseWordSegmentor(object):
                 return self.segmentor.segment(text, pos_tagging=True)
             else:
                 return self.segmentor.segment(text, pos_tagging=False)
+        elif segger.model.lower() == 'tochar':
+            if pos:
+                raise NotImplementedError
+            else:
+                return list(text)
         else:
             raise NotImplementedError
 
