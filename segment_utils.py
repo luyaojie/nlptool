@@ -25,7 +25,7 @@ class ChineseWordSegmentor(object):
             import pynlpir
             pynlpir.open()
             self.segmentor = pynlpir
-        elif model.lower() == 'tochar':
+        elif model.lower() == 'char':
             self.segmentor = None
         else:
             raise NotImplementedError
@@ -50,7 +50,7 @@ class ChineseWordSegmentor(object):
                 return self.segmentor.segment(text, pos_tagging=True)
             else:
                 return self.segmentor.segment(text, pos_tagging=False)
-        elif segger.model.lower() == 'tochar':
+        elif segger.model.lower() == 'char':
             if pos:
                 raise NotImplementedError
             else:
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--tar', default="stdout", type=str, dest="tar",
                         help='segmented file, default is stdout')
     parser.add_argument('-seg', default="ictclas", type=str, dest="seg",
-                        help='segment type, default is ictclas, (ictclas jieba)')
+                        help='segment type, default is ictclas, (ictclas jieba char)')
     parser.add_argument('-pos', action="store_true", dest="pos",
                         help='keep pos, default is False')
     args = parser.parse_args()
