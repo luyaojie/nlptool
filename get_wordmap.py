@@ -23,11 +23,10 @@ def load_wordmap(encoding='utf8', count_lower=True):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(usage="Get Word Map")
-    parser.add_argument('-lower', dest='lower', action='store_true',
-                        help='Count Lower')
+    parser.add_argument('-lower', dest='lower', action='store_true', help='Count Raw and Lower')
     args = parser.parse_args()
 
-    word_map = load_wordmap()
+    word_map = load_wordmap(args.lower)
     word_map = sorted(word_map.iteritems(), key=lambda d: d[1], reverse=True)
     with sys.stdout as out:
         for index, word_count in enumerate(word_map):
