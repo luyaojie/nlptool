@@ -16,21 +16,20 @@ def read_shell(filename):
 
 
 def run_command(command):
-    print os.getpid(), command
+    print(os.getpid(), command)
     # status = os.system(command)
     status = subprocess.call([command], shell=True)
     if status > 0:
-        print "Run Err:", command
+        print("Run Err:", command)
         return 1
     else:
-        print "Finished:", command
+        print("Finished:", command)
         return 0
 
 
 if __name__ == "__main__":
     shell_list = read_shell(shell_file)
     pool = mp.Pool(int(sys.argv[2]))
-    print pool.map(run_command, [path for path in shell_list])
+    print(pool.map(run_command, [path for path in shell_list]))
     pool.close()
     pool.join()
-

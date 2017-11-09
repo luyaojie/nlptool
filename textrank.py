@@ -30,7 +30,7 @@ def pagerank(vertex_weight, edge_matrix, max_iter=1000, stop_threshold=0.0001, f
     return vertex_weight
 
 
-def load_file(filename, stop_word=None, window=2):
+def load_file(filename, stop_word=None, stop_pos=None):
     word2index = dict()
     index2word = dict()
     cooc_count = defaultdict(int)
@@ -46,7 +46,14 @@ def load_file(filename, stop_word=None, window=2):
     with codecs.open(filename, 'r', 'utf8') as fin:
         for line in fin:
             words = line.strip().split()
-            for w1, w2 in zip(words[:-1], words[1:]):
+            for _w1, _w2 in zip(words[:-1], words[1:]):
+                if stop_pos is not None:
+                    if '/' not in _w1 or '/' not in _w2:
+                        continue
+                    w1, pos1 = _w1.split('/')
+                    w2, pos2 = _w2.split('/')
+                    if pos1 in stop_pos or pos2 in stop_pos:
+                        continue
                 if w1 in stop_word or w2 in stop_word:
                     continue
                 add_word(w1)
@@ -58,7 +65,9 @@ def load_file(filename, stop_word=None, window=2):
 
 
 def main():
-    index2word, cooc_count = load_file(sys.argv[1], stop_word={u"，", u"。", u"？"})
+    index2word, cooc_count = load_file(sys.argv[1], stop_word={u"，", u"。", u"？"},
+                                       stop_pos={u"punctuation_mark", u"modal_particle", u"numeral",
+                                                 u"pronoun", u"adverb"})
     vertex_weight = np.random.random(size=(len(index2word)))
     edge_weight = np.zeros((len(index2word), len(index2word)))
     for (index1, index2), count in iteritems(cooc_count):

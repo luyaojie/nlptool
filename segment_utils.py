@@ -25,6 +25,8 @@ class ChineseWordSegmentor(object):
             import pynlpir
             pynlpir.open()
             self.segmentor = pynlpir
+        elif model.lower() == 'char':
+            self.segmentor = None
         else:
             raise NotImplementedError
 
@@ -48,6 +50,11 @@ class ChineseWordSegmentor(object):
                 return self.segmentor.segment(text, pos_tagging=True)
             else:
                 return self.segmentor.segment(text, pos_tagging=False)
+        elif segger.model.lower() == 'char':
+            if pos:
+                raise NotImplementedError
+            else:
+                return list(text)
         else:
             raise NotImplementedError
 
@@ -61,7 +68,9 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--tar', default="stdout", type=str, dest="tar",
                         help='segmented file, default is stdout')
     parser.add_argument('-seg', default="ictclas", type=str, dest="seg",
-                        help='segment type, default is ictclas, (ictclas jieba)')
+                        help='segment type, default is ictclas, (ictclas jieba char)')
+    parser.add_argument('-pos', action="store_true", dest="pos",
+                        help='keep pos, default is False')
     args = parser.parse_args()
     segger = ChineseWordSegmentor(args.seg)
     with sys.stdin if args.src == 'stdin' else codecs.open(args.src, 'r', 'utf8') as fin:
@@ -73,7 +82,12 @@ if __name__ == "__main__":
                 if len(line) == 0:
                     out.write('\n')
                 try:
-                    to_write = u" ".join(segger.segment(line)) + '\n'
+                    result = segger.segment(line, pos=args.pos)
+                    if args.pos:
+                        seg_result = u" ".join(["/".join([r[0], r[1].replace(' ', '_')]) for r in result])
+                    else:
+                        seg_result = u" ".join(result)
+                    to_write = seg_result + '\n'
                 except:
                     to_write = u' '.join(list(line)) + '\n'
                     sys.stderr.write(any2utf8(to_write))
