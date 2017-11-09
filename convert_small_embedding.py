@@ -108,7 +108,7 @@ def load_word2vec_format(filename, word_idx=None, binary=False,
 
 
 def main(word_map_file, embedding_file, new_embedding_file, binary=True,
-         word_map_encoding='utf-8', embedding_encoding='utf-8'):
+         word_map_encoding='utf-8', embedding_encoding='utf-8', unicode_err='strict'):
     word_map = dict()
     with open(word_map_file, 'r') as fin:
         for line in fin:
@@ -124,7 +124,8 @@ def main(word_map_file, embedding_file, new_embedding_file, binary=True,
             else:
                 word_map[word] = len(word_map)
     word_embedding, vsize, vocab = load_word2vec_format(embedding_file, word_map,
-                                                        binary=binary, encoding=embedding_encoding)
+                                                        binary=binary, encoding=embedding_encoding,
+                                                        unicode_errors=unicode_err)
     save_word2vec_format(vocab, word_embedding, new_embedding_file, binary=binary)
 
 
@@ -134,15 +135,19 @@ if __name__ == "__main__":
     parser.add_argument('-w', '--word', type=str, required=True, help='Word Map File')
     parser.add_argument('-s', '--src', type=str, required=True, help='Source Embedding File')
     parser.add_argument('-t', '--tar', type=str, required=True, help='Target Embedding File')
-    parser.add_argument('--binary', dest='binary', action='store_true',
+    parser.add_argument('-binary', dest='binary', action='store_true',
                         help='Binary Style for Word Embedding File (Default)')
-    parser.add_argument('--text', dest='binary', action='store_false',
+    parser.add_argument('-text', dest='binary', action='store_false',
                         help='Text Style for Word Embedding File')
-    parser.add_argument('--word-encoding', dest='word_encoding', type=str,
+    parser.add_argument('-word-encoding', dest='word_encoding', type=str,
                         default='utf-8', help='Word Map File Encoding, Default is utf-8.')
-    parser.add_argument('--embedding-encoding', dest='embedding_encoding', type=str,
+    parser.add_argument('-embedding-encoding', dest='embedding_encoding', type=str,
                         default='utf-8', help='Word Embedding Encoding, Default is utf-8.')
+    parser.add_argument('-ignore', dest='ignore', action='store_true',
+                        help="unicode_errors: errors be 'ignore' and defaults to 'strict'.")
     parser.set_defaults(binary=True)
     args = parser.parse_args()
+    strict_option = 'ignore' if args.ignore else 'strict'
     main(word_map_file=args.word, embedding_file=args.src, new_embedding_file=args.tar,
-         binary=args.binary, word_map_encoding=args.word_encoding, embedding_encoding=args.embedding_encoding)
+         binary=args.binary, word_map_encoding=args.word_encoding, embedding_encoding=args.embedding_encoding,
+         unicode_err=strict_option)
