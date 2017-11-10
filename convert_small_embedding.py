@@ -132,9 +132,9 @@ def main(word_map_file, embedding_file, new_embedding_file, binary=True,
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(usage="Convert Big Vocab Word Embedding into Small Vocab Embedding")
-    parser.add_argument('-w', '--word', type=str, required=True, help='Word Map File')
-    parser.add_argument('-s', '--src', type=str, required=True, help='Source Embedding File')
-    parser.add_argument('-t', '--tar', type=str, required=True, help='Target Embedding File')
+    parser.add_argument('-w', type=str, required=True, dest='word', help='Word Map File')
+    parser.add_argument('-s', type=str, required=True, dest='src', help='Source Embedding File')
+    parser.add_argument('-t', type=str, required=True, dest='tar', help='Target Embedding File')
     parser.add_argument('-binary', dest='binary', action='store_true',
                         help='Binary Style for Word Embedding File (Default)')
     parser.add_argument('-text', dest='binary', action='store_false',
