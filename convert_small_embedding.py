@@ -123,6 +123,8 @@ def main(word_map_file, embedding_file, new_embedding_file, binary=True,
             else:
                 word_map[word] = len(word_map)
 
+    sys.stderr.write("load word: %d\n" % len(word_map))
+
     word_map_words = word_map.keys()
     lower_word_count = 0
     for word in word_map_words:
@@ -130,8 +132,8 @@ def main(word_map_file, embedding_file, new_embedding_file, binary=True,
         if lower_word not in word_map:
             lower_word_count += 1
             word_map[lower_word] = len(word_map)
-    sys.stderr.write("add lower word: %d" % lower_word_count)
-    
+    sys.stderr.write("add lower word: %d\n" % lower_word_count)
+
     word_embedding, vsize, vocab = load_word2vec_format(embedding_file, word_map,
                                                         binary=binary, encoding=embedding_encoding,
                                                         unicode_errors=unicode_err)
