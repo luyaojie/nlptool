@@ -9,7 +9,6 @@ import numpy as np
 
 REAL = np.float32
 
-
 __author__ = 'roger'
 
 
@@ -132,25 +131,25 @@ def main(word_map_file, embedding_file, new_embedding_file, binary=True,
     save_word2vec_format(vocab, word_embedding, new_embedding_file, binary=binary)
 
 
-if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser(usage="Convert Big Vocab Word Embedding into Small Vocab Embedding")
-    parser.add_argument('-w', type=str, required=True, dest='word', help='Word Map File')
-    parser.add_argument('-s', type=str, required=True, dest='src', help='Source Embedding File')
-    parser.add_argument('-t', type=str, required=True, dest='tar', help='Target Embedding File')
-    parser.add_argument('-binary', dest='binary', action='store_true',
-                        help='Binary Style for Word Embedding File (Default)')
-    parser.add_argument('-text', dest='binary', action='store_false',
-                        help='Text Style for Word Embedding File')
-    parser.add_argument('-word-encoding', dest='word_encoding', type=str,
-                        default='utf-8', help='Word Map File Encoding, Default is utf-8.')
-    parser.add_argument('-embedding-encoding', dest='embedding_encoding', type=str,
-                        default='utf-8', help='Word Embedding Encoding, Default is utf-8.')
-    parser.add_argument('-ignore', dest='ignore', action='store_true',
-                        help="unicode_errors: errors be 'ignore' and defaults to 'strict'.")
-    parser.set_defaults(binary=True)
-    args = parser.parse_args()
-    strict_option = 'ignore' if args.ignore else 'strict'
-    main(word_map_file=args.word, embedding_file=args.src, new_embedding_file=args.tar,
-         binary=args.binary, word_map_encoding=args.word_encoding, embedding_encoding=args.embedding_encoding,
-         unicode_err=strict_option)
+import argparse
+
+parser = argparse.ArgumentParser(usage="Convert Big Vocab Word Embedding into Small Vocab Embedding")
+parser.add_argument('-w', type=str, required=True, dest='word', help='Word Map File')
+parser.add_argument('-s', type=str, required=True, dest='src', help='Source Embedding File')
+parser.add_argument('-t', type=str, required=True, dest='tar', help='Target Embedding File')
+parser.add_argument('-binary', dest='binary', action='store_true',
+                    help='Binary Style for Word Embedding File (Default)')
+parser.add_argument('-text', dest='binary', action='store_false',
+                    help='Text Style for Word Embedding File')
+parser.add_argument('-word-encoding', dest='word_encoding', type=str,
+                    default='utf-8', help='Word Map File Encoding, Default is utf-8.')
+parser.add_argument('-embedding-encoding', dest='embedding_encoding', type=str,
+                    default='utf-8', help='Word Embedding Encoding, Default is utf-8.')
+parser.add_argument('-ignore', dest='ignore', action='store_true',
+                    help="unicode_errors: errors be 'ignore' and defaults to 'strict'.")
+parser.set_defaults(binary=True)
+args = parser.parse_args()
+strict_option = 'ignore' if args.ignore else 'strict'
+main(word_map_file=args.word, embedding_file=args.src, new_embedding_file=args.tar,
+     binary=args.binary, word_map_encoding=args.word_encoding, embedding_encoding=args.embedding_encoding,
+     unicode_err=strict_option)
