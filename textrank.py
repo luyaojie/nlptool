@@ -26,7 +26,7 @@ def pagerank(vertex_weight, edge_matrix, max_iter=1000, stop_threshold=0.0001, f
             break
         else:
             print("Iter %d loss: %.5f" % (iter_index, loss))
-            last_vertex_weight = np.copy(vertex_weight)
+            last_vertex_weight = vertex_weight
     return vertex_weight
 
 
