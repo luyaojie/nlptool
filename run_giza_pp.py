@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*- 
 # Created by Roger on 2018/1/12
+# Description almost from
+#   https://github.com/moses-smt/giza-pp/blob/master/GIZA%2B%2B-v2/README
+#   https://www.cse.iitb.ac.in/~anoopk/publications/presentations/moses_giza_intro.pdf
 import sys
 import os
 import subprocess
@@ -74,8 +77,12 @@ def run_giza(src, trg):
         - tst.trg.vcb
             blank
         - ti.final
-        
-
+            1. file contains word alignments from the french and english corpus
+            2. word alignments are in the specific words unique id
+            3. the probability of that alignment is given after each set of numbers
+                3 0 0.237882
+                1171 1227 0.963072
+        ... more details in https://github.com/moses-smt/giza-pp/blob/master/GIZA%2B%2B-v2/README
     """
     step3_sh = "%s -S %s -T %s -C %s -CoocurrenceFile %s" % ("%s/GIZA++" % giza_dir,
                                                              src_vocab, trg_vocab, src_trg_snt_file, src_trg_cooc_file)
