@@ -92,7 +92,7 @@ def main():
             for line in fin:
                 line = line.strip().replace('\t', ' ')
                 parsed_json = nlp.annotate(text=line, encoding=args.encoding, properties=properties)
-                output.write("%s\t%s\n" % (json.dumps(parsed_json)))
+                output.write("%s\t%s\n" % (line, json.dumps(parsed_json)))
 
 
 if __name__ == "__main__":
