@@ -54,12 +54,10 @@ class StanfordCoreNLP:
 
 
 def load_parsed_json(json_filename, encoding='utf8'):
-    import cPickle as pickle
     parsed_json = dict()
     with codecs.open(json_filename, 'r', encoding) as fin:
         for line in fin:
-            line = line.strip()
-            line, p_json = pickle.loads(line)
+            line, p_json = line.strip().split('\t')
             parsed_json[line] = p_json
     return parsed_json
 
