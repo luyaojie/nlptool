@@ -54,10 +54,12 @@ class StanfordCoreNLP:
 
 
 def load_parsed_json(json_filename):
+    import cPickle as pickle
     parsed_json = dict()
     with open(json_filename, 'r') as fin:
         for line in fin:
-            line, p_json = line.strip().split("\t")
+            line = line.strip()
+            line, p_json = pickle.loads(line)
             parsed_json[line] = p_json
     return parsed_json
 
@@ -66,6 +68,7 @@ def main():
     import codecs
     import argparse
     import json
+    import cPickle as pickle
 
     parser = argparse.ArgumentParser(description="Stanford Text Analyzer")
     parser.add_argument('-server', dest='server', type=str, default="127.0.0.1", help='Stanford Corenlp Server URL')
@@ -92,7 +95,7 @@ def main():
             for line in fin:
                 line = line.strip().replace('\t', ' ')
                 parsed_json = nlp.annotate(text=line, encoding=args.encoding, properties=properties)
-                output.write("%s\t%s\n" % (line, json.dumps(parsed_json)))
+                output.write("%s\n" % pickle.dumps(line, json.dumps(parsed_json)))
 
 
 if __name__ == "__main__":
