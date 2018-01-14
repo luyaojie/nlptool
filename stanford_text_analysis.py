@@ -3,8 +3,8 @@
 # Created by Roger on 2018/1/12
 import json
 import requests
-from multiprocessing import Pool
-import sys
+import codecs
+
 
 default_properties = {
     'annotators': 'tokenize,ssplit,pos,ner,depparse',
@@ -63,12 +63,9 @@ def load_parsed_json(json_filename, encoding='utf8'):
 
 
 def main():
-    import codecs
-    import argparse
-    import json
-    import cPickle as pickle
+    from argparse import ArgumentParser
 
-    parser = argparse.ArgumentParser(description="Stanford Text Analyzer")
+    parser = ArgumentParser(description="Stanford Text Analyzer")
     parser.add_argument('-server', dest='server', type=str, default="127.0.0.1", help='Stanford Corenlp Server URL')
     parser.add_argument('-port', dest='port', type=int, default=8080, help='Stanford Corenlp Server Port')
     parser.add_argument('-input', dest='input', type=str, default=None, required=True,
