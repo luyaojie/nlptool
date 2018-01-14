@@ -48,15 +48,15 @@ class StanfordCoreNLP:
                 and properties['outputFormat'] == 'json'):
             try:
                 output = json.loads(output, encoding='utf-8', strict=True)
-            except:
-                sys.stderr.write("Skip Error Run: %s" % data)
+            except Exception:
+                raise Exception('Skip Error Run: %s' % data)
         return output
 
 
-def load_parsed_json(json_filename):
+def load_parsed_json(json_filename, encoding='utf8'):
     import cPickle as pickle
     parsed_json = dict()
-    with open(json_filename, 'r') as fin:
+    with codecs.open(json_filename, 'r', encoding) as fin:
         for line in fin:
             line = line.strip()
             line, p_json = pickle.loads(line)
@@ -90,12 +90,15 @@ def main():
 
     nlp = StanfordCoreNLP('http://%s:%s' % (args.server, args.port))
 
-    with open(args.output, 'w') as output:
+    with codecs.open(args.output, 'w', args.encoding) as output:
         with codecs.open(args.input, 'r', args.encoding) as fin:
             for line in fin:
                 line = line.strip().replace('\t', ' ')
-                parsed_json = nlp.annotate(text=line, encoding=args.encoding, properties=properties)
-                output.write("%s\n" % pickle.dumps(line, json.dumps(parsed_json)))
+                try:
+                    parsed_json = nlp.annotate(text=line, encoding=args.encoding, properties=properties)
+                    output.write("%s\t%s\n" % (line, json.dumps(parsed_json)))
+                except Exception:
+                    pass
 
 
 if __name__ == "__main__":
