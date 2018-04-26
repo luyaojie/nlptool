@@ -69,7 +69,7 @@ def main():
                                        stop_pos={u"punctuation_mark", u"modal_particle", u"numeral",
                                                  u"pronoun", u"adverb"})
     vertex_weight = np.random.random(size=(len(index2word)))
-    edge_weight = np.zeros((len(index2word), len(index2word)))
+    edge_weight = np.zeros((len(index2word), len(index2word)), dtype=np.int32)
     for (index1, index2), count in iteritems(cooc_count):
         edge_weight[index1, index2] = count
         edge_weight[index2, index1] = count

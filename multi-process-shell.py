@@ -4,7 +4,6 @@ import subprocess
 import sys
 
 index_lock = mp.Lock()
-shell_file = sys.argv[1]
 
 
 def read_shell(filename):
@@ -28,8 +27,15 @@ def run_command(command):
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser('Multi Process Run Shell')
+    parser.add_argument('-s', dest='shell', help='Shell File Name')
+    parser.add_argument('-n', dest='number', help='Process Number')
+    args = parser.parse_args()
+
+    shell_file = args.shell
     shell_list = read_shell(shell_file)
-    pool = mp.Pool(int(sys.argv[2]))
+    pool = mp.Pool(args.number)
     print(pool.map(run_command, [path for path in shell_list]))
     pool.close()
     pool.join()

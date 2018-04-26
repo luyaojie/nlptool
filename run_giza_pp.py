@@ -30,7 +30,6 @@ def run_giza(src, trg):
     :param trg: trg file name
     :return:
     """
-
     """
     Step 1: Create files needed for GIZA++
     Files created by plain2snt
