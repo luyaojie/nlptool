@@ -59,7 +59,7 @@ class ChineseWordSegmentor(object):
                 return [(word.split('[POS]')) for word in result.split()]
             else:
                 return [word.split('[POS]')[0] for word in result.split()]
-        elif segger.model.lower() == 'char':
+        elif self.model.lower() == 'char':
             if pos:
                 raise NotImplementedError
             else:
