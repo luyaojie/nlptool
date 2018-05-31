@@ -25,6 +25,9 @@ class ChineseWordSegmentor(object):
             import pynlpir
             pynlpir.open()
             self.segmentor = pynlpir
+        elif model.lower() == 'thulac':
+            import thulac
+            self.segmentor = thulac.thulac(deli='[POS]')
         elif model.lower() == 'char':
             self.segmentor = None
         else:
@@ -50,6 +53,12 @@ class ChineseWordSegmentor(object):
                 return self.segmentor.segment(text, pos_tagging=True)
             else:
                 return self.segmentor.segment(text, pos_tagging=False)
+        elif self.model.lower() == 'thulac':
+            result = self.segmentor.cut(any2utf8(text), text=True).decode('utf8')
+            if pos:
+                return [(word.split('[POS]')) for word in result.split()]
+            else:
+                return [word.split('[POS]')[0] for word in result.split()]
         elif segger.model.lower() == 'char':
             if pos:
                 raise NotImplementedError
@@ -68,10 +77,12 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--tar', default="stdout", type=str, dest="tar",
                         help='segmented file, default is stdout')
     parser.add_argument('-seg', default="ictclas", type=str, dest="seg",
-                        help='segment type, default is ictclas, (ictclas jieba char)')
+                        help='segment type, default is ictclas, (ictclas jieba thulac char)',
+                        choices=['ictclas', 'jieba', 'thulac', 'char'])
     parser.add_argument('-pos', action="store_true", dest="pos",
                         help='keep pos, default is False')
     args = parser.parse_args()
+    print(args.tar)
     segger = ChineseWordSegmentor(args.seg)
     with sys.stdin if args.src == 'stdin' else codecs.open(args.src, 'r', 'utf8') as fin:
         with sys.stdout if args.tar == 'stdout' else codecs.open(args.tar, 'w') as out:
@@ -89,6 +100,7 @@ if __name__ == "__main__":
                         seg_result = u" ".join(result)
                     to_write = seg_result + '\n'
                 except:
+                    print("ERROR")
                     to_write = u' '.join(list(line)) + '\n'
                     sys.stderr.write(any2utf8(to_write))
                 write_str_to_out(out, to_write)
