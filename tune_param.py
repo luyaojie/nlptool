@@ -16,7 +16,7 @@ def load_config_from_file(filename):
         log_folder = fin.readline().strip()
         for line in fin:
             att = line.strip().split('\t')
-            cmd_option[att[0]] = att[1:]
+            cmd_option[att[0].strip()] = [value.strip() for value in att[1:]]
     return base_cmd, cmd_option, log_folder
 
 
@@ -39,7 +39,8 @@ def get_log_filename(log_folder, cmd_candidate):
     assert len(cmd_candidate) % 2 == 0
     log_filename_list = []
     for index in range(len(cmd_candidate) // 2):
-        log_filename_list += ["%s_%s" % (cmd_candidate[2 * index].replace('-', ''), cmd_candidate[2 * index + 1])]
+        log_filename_list += ["%s_%s" % (cmd_candidate[2 * index].replace('-', ''),
+                                         cmd_candidate[2 * index + 1].replace(' ', '-'))]
     log_filename = log_folder + os.sep + '_'.join([get_exp_id()] + log_filename_list)
     return log_filename
 
