@@ -98,15 +98,6 @@ def run_command(command):
 
 
 def main():
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '-config', dest='config', type=str, help='Run Config')
-    parser.add_argument('-n', '-thread', dest='thread', type=int, default=1, help='Thread Num')
-    parser.add_argument('-enum', action='store_false', dest='random', help='Enumerate all params')
-    parser.add_argument('-random', action='store_true', dest='random', help='Random Search (Default)')
-    parser.set_defaults(random=True)
-    parser.add_argument('-k', '-max-num', dest='max_num', type=int, default=10, help='Max Random Search Time')
-    args = parser.parse_args()
 
     base_cmd, cmd_option, log_folder = load_config_from_file(args.config)
 
@@ -119,4 +110,14 @@ def main():
 
 
 if __name__ == "__main__":
+    print("This Process: %s" % os.getpid())
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '-config', dest='config', type=str, help='Run Config')
+    parser.add_argument('-n', '-thread', dest='thread', type=int, default=1, help='Thread Num')
+    parser.add_argument('-enum', action='store_false', dest='random', help='Enumerate all params')
+    parser.add_argument('-random', action='store_true', dest='random', help='Random Search (Default)')
+    parser.set_defaults(random=True)
+    parser.add_argument('-k', '-max-num', dest='max_num', type=int, default=10, help='Max Random Search Time')
+    args = parser.parse_args()
     main()
