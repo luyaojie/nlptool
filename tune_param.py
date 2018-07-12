@@ -101,12 +101,14 @@ def run_command(command):
 def main():
     base_cmd, cmd_option, log_folder = load_config_from_file(args.config)
 
-    for cmd_list in cmd_generator(base_cmd, cmd_option, log_folder,
-                                  pool_size=args.thread, random=args.random, max_num=args.max_num):
-        pool = mp.Pool(args.thread)
-        pool.map(run_command, cmd_list)
-        pool.close()
-        pool.join()
+    cmd_list = list()
+
+    for cmd in cmd_generator(base_cmd, cmd_option, log_folder, random=args.random, max_num=args.max_num):
+        cmd_list += cmd
+    pool = mp.Pool(args.thread)
+    pool.map(run_command, cmd_list)
+    pool.close()
+    pool.join()
 
 
 def add_argument(parser):
