@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*- 
 # Created by Roger on 2018/6/20
+import argparse
 import math
 import multiprocessing as mp
 import os
@@ -98,7 +99,6 @@ def run_command(command):
 
 
 def main():
-
     base_cmd, cmd_option, log_folder = load_config_from_file(args.config)
 
     for cmd_list in cmd_generator(base_cmd, cmd_option, log_folder,
@@ -109,15 +109,19 @@ def main():
         pool.join()
 
 
-if __name__ == "__main__":
-    print("This Process: %s" % os.getpid())
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '-config', dest='config', type=str, help='Run Config')
-    parser.add_argument('-n', '-thread', dest='thread', type=int, default=1, help='Thread Num')
+def add_argument(parser):
+    parser.add_argument('-c', '--config', dest='config', help='Run Config')
+    parser.add_argument('-n', '--thread', dest='thread', type=int, default=1, help='Thread Num')
     parser.add_argument('-enum', action='store_false', dest='random', help='Enumerate all params')
     parser.add_argument('-random', action='store_true', dest='random', help='Random Search (Default)')
     parser.set_defaults(random=True)
-    parser.add_argument('-k', '-max-num', dest='max_num', type=int, default=10, help='Max Random Search Time')
+    parser.add_argument('-k', '--max-num', dest='max_num', type=int, default=10, help='Max Random Search Time')
+
+
+if __name__ == "__main__":
+    print("This Process: %s" % os.getpid())
+
+    parser = argparse.ArgumentParser()
+    add_argument(parser)
     args = parser.parse_args()
     main()
