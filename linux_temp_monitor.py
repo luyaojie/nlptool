@@ -67,6 +67,7 @@ def get_gpu_tem():
     return temp_list
 
 
+send_email(mailto_list, "Start monitoring on %s" % server_name, "Start Monitoring")
 while True:
     try:
         gpu_temp_list = get_gpu_tem()
