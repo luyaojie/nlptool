@@ -15,6 +15,8 @@ def load_config_from_file(filename):
     with open(filename) as fin:
         base_cmd = fin.readline().strip()
         log_folder = fin.readline().strip()
+        if not os.path.exists(log_folder):
+            os.makedirs(log_folder)
         for line in fin:
             att = line.strip().split('\t')
             cmd_option[att[0].strip()] = [value.strip() for value in att[1:]]
