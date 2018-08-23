@@ -76,8 +76,9 @@ def cmd_generator(base_cmd, cmd_option, log_folder, pool_size=2, random=True, ma
             else:
                 cmd_candidate_list = [c1 + c2 for c1 in cmds for c2 in cmd_candidate_list]
 
-    cmd_candidate_list = ["%s %s > %s 2>&1" % (base_cmd, ' '.join(cmd_candidate),
-                                               get_log_filename(log_folder, cmd_candidate))
+    cmd_candidate_list = [("%s %s " % (base_cmd, ' '.join(cmd_candidate)),  # Command
+                           get_log_filename(log_folder, cmd_candidate),  # STDOUT
+                           )
                           for cmd_candidate in cmd_candidate_list]
 
     num_batch = int(math.ceil(len(cmd_candidate_list) / float(pool_size)))
@@ -98,12 +99,42 @@ def run_command(command):
         return command, 0
 
 
+def get_run_device():
+    if len(args.device) == 1:
+        return args.device[0]
+
+    # def get_gpu_memory_use_rate():
+    #     shell_str = "nvidia-smi | awk '{print $9}' | grep 'MiB'"
+    #     result = os.popen(shell_str)
+    #     used_list = [float(temp[:-1]) for temp in result.read().strip().split('\n')]
+    #
+    #     shell_str = "nvidia-smi | awk '{print $11}' | grep 'MiB'"
+    #     result = os.popen(shell_str)
+    #     all_list = [float(temp[:-3]) for temp in result.read().strip().split('\n')]
+    #
+    #     temp_list = [used / all_mem for used, all_mem in zip(used_list, all_list)]
+    #
+    #     return temp_list
+    #
+    # def get_gpu_volatile_rate():
+    #     shell_str = "nvidia-smi | awk '{print $13}' | grep 'MiB'"
+    #     result = os.popen(shell_str)
+    #     use_rate_list = [float(temp[:-1]) for temp in result.read().strip().split('\n')]
+    #     return use_rate_list
+    #
+    # memroy_use_rates = get_gpu_memory_use_rate()
+    # gpu_use_rates = get_gpu_volatile_rate()
+
+    return args.device[0]
+
+
 def main():
     base_cmd, cmd_option, log_folder = load_config_from_file(args.config)
 
     cmd_list = list()
-
-    for cmd in cmd_generator(base_cmd, cmd_option, log_folder, random=args.random, max_num=args.max_num):
+    # TODO Auto Select GPU Device
+    for cmd_base, log_file in cmd_generator(base_cmd, cmd_option, log_folder, random=args.random, max_num=args.max_num):
+        cmd = "%s -d %s > %s 2>&1" % (cmd_base, get_run_device(), log_file)
         cmd_list += cmd
     pool = mp.Pool(args.thread)
     pool.map(run_command, cmd_list)
@@ -111,13 +142,14 @@ def main():
     pool.join()
 
 
-def add_argument(parser):
-    parser.add_argument('-c', '--config', dest='config', help='Run Config')
-    parser.add_argument('-n', '--thread', dest='thread', type=int, default=1, help='Thread Num')
-    parser.add_argument('-enum', action='store_false', dest='random', help='Enumerate all params')
-    parser.add_argument('-random', action='store_true', dest='random', help='Random Search (Default)')
-    parser.set_defaults(random=True)
-    parser.add_argument('-k', '--max-num', dest='max_num', type=int, default=10, help='Max Random Search Time')
+def add_argument(_parser):
+    _parser.add_argument('-c', '--config', dest='config', help='Run Config')
+    _parser.add_argument('-n', '--thread', dest='thread', type=int, default=1, help='Thread Num')
+    _parser.add_argument('-enum', action='store_false', dest='random', help='Enumerate all params')
+    _parser.add_argument('-random', action='store_true', dest='random', help='Random Search (Default)')
+    _parser.set_defaults(random=True)
+    _parser.add_argument('-k', '--max-num', dest='max_num', type=int, default=10, help='Max Random Search Time')
+    _parser.add_argument('-d', '--device', dest='device', nargs='+', default=[], help='Device for Exp')
 
 
 if __name__ == "__main__":
