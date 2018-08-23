@@ -133,9 +133,13 @@ def main():
 
     cmd_list = list()
     # TODO Auto Select GPU Device
-    for cmd_base, log_file in cmd_generator(base_cmd, cmd_option, log_folder, random=args.random, max_num=args.max_num):
-        cmd = "%s -d %s > %s 2>&1" % (cmd_base, get_run_device(), log_file)
-        cmd_list += cmd
+    for sub_cmd_list in cmd_generator(base_cmd, cmd_option, log_folder, random=args.random, max_num=args.max_num):
+        for cmd_base, log_file in sub_cmd_list:
+            cmd = "%s -d %s > %s 2>&1" % (cmd_base, get_run_device(), log_file)
+            cmd_list += [cmd]
+    print("TO RUN CMD")
+    for cmd in cmd_list:
+        print("\t%s" % cmd)
     pool = mp.Pool(args.thread)
     pool.map(run_command, cmd_list)
     pool.close()
