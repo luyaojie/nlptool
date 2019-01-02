@@ -48,7 +48,7 @@ def get_log_filename(log_folder, cmd_candidate):
     return log_filename
 
 
-def cmd_generator(base_cmd, cmd_option, log_folder, pool_size=2, random=True, max_num=10):
+def cmd_generator(base_cmd, cmd_option, log_folder, pool_size=2, random=True, max_num=10, enum_time=1):
     """
 
     :param base_cmd:    Base Command
@@ -57,6 +57,7 @@ def cmd_generator(base_cmd, cmd_option, log_folder, pool_size=2, random=True, ma
     :param pool_size:
     :param random:      random search ot not
     :param max_num:     max exp number
+    :param enum_time:   max enum times
     :return:
     """
     cmd_candidate_list = list()
@@ -77,6 +78,7 @@ def cmd_generator(base_cmd, cmd_option, log_folder, pool_size=2, random=True, ma
                 cmd_candidate_list = cmds
             else:
                 cmd_candidate_list = [c1 + c2 for c1 in cmds for c2 in cmd_candidate_list]
+        cmd_candidate_list *= enum_time
 
     cmd_candidate_list = [("%s %s " % (base_cmd, ' '.join(cmd_candidate)),  # Command
                            get_log_filename(log_folder, cmd_candidate),  # STDOUT
@@ -135,7 +137,8 @@ def main():
 
     cmd_list = list()
     # TODO Auto Select GPU Device
-    for sub_cmd_list in cmd_generator(base_cmd, cmd_option, log_folder, random=args.random, max_num=args.max_num):
+    for sub_cmd_list in cmd_generator(base_cmd, cmd_option, log_folder, random=args.random, max_num=args.max_num,
+                                      enum_time=args.enum_time):
         for cmd_base, log_file in sub_cmd_list:
             cmd = "%s -device %s > %s 2>&1" % (cmd_base, get_run_device(), log_file)
             cmd_list += [cmd]
@@ -155,6 +158,7 @@ def add_argument(_parser):
     _parser.add_argument('-random', action='store_true', dest='random', help='Random Search (Default)')
     _parser.set_defaults(random=True)
     _parser.add_argument('-k', '--max-num', dest='max_num', type=int, default=10, help='Max Random Search Time')
+    _parser.add_argument('--enum-time', dest='enum_time', type=int, default=1, help='Max Enum Time')
     _parser.add_argument('-d', '--device', dest='device', nargs='+', default=[], help='Device for Exp')
 
 
