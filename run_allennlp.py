@@ -57,7 +57,7 @@ def run_eval_exp(model_folder, test_data_path, include_package, device):
 def add_argument(_parser):
     _parser.add_argument('-c', '--config', dest='config', help='Run Config')
     _parser.add_argument('-m', '--model', dest='model', help='Model Prefix')
-    _parser.add_argument('-k', '--run-time-number', dest='run_time_number', help='Run Time')
+    _parser.add_argument('-k', '--run-time-number', dest='run_time_number', help='Run Time', type=int, default=1)
     _parser.add_argument('-d', '--device', dest='device', help='GPU Device to Run')
     _parser.add_argument('-i', '--include', dest='include_package', help='Include Package')
     _parser.add_argument('-t', '--test', dest='test_data_path', help='Test Data Path')
