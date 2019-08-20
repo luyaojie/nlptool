@@ -65,12 +65,13 @@ def add_argument(_parser):
 
 def main():
     for i in range(args.run_time_number):
+        model_path = '_'.join([args.model, get_exp_id()])
         run_train_exp(config_path=args.config,
-                      model_folder=args.model,
+                      model_folder=model_path,
                       include_package=args.include_package,
                       device=args.device)
         if args.test_data_path is not None:
-            run_eval_exp(model_folder=args.model,
+            run_eval_exp(model_folder=model_path,
                          test_data_path=args.test_data_path,
                          include_package=args.include_package,
                          device=args.device)
