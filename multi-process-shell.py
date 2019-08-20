@@ -1,7 +1,6 @@
 import multiprocessing as mp
 import os
 import subprocess
-import sys
 
 index_lock = mp.Lock()
 
@@ -28,6 +27,7 @@ def run_command(command):
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser('Multi Process Run Shell')
     parser.add_argument('-s', dest='shell', help='Shell File Name')
     parser.add_argument('-n', dest='number', help='Process Number')
