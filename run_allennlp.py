@@ -10,7 +10,8 @@ import subprocess
 def get_exp_id():
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     from datetime import datetime
-    exp_str = datetime.now().strftime("%y%m%d")
+    exp_str = datetime.now().strftime("%y_%m_%d")
+    exp_str += '_'
     for i in range(4):
         exp_str += py_random.choice(alpha)
     return exp_str
