@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*- 
+# -*- coding:utf-8 -*-
 # Created by Roger on 2019-08-20
 import argparse
 import os
@@ -11,9 +11,9 @@ import subprocess
 def get_exp_id():
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     from datetime import datetime
-    exp_str = datetime.now().strftime("%y_%m_%d")
+    exp_str = datetime.now().strftime("%y_%m_%d_%H_%M")
     exp_str += '_'
-    for i in range(4):
+    for i in range(6):
         exp_str += py_random.choice(alpha)
     return exp_str
 
@@ -37,21 +37,19 @@ def get_run_device():
     return args.device[0]
 
 
-def add_random_seed(config_path, model_folder, seed):
+def add_random_seed(config_path, seed):
     import json
-    new_config_path = os.path.join(model_folder, 'model.jsonnet')
+    new_config_path = os.path.join("/tmp", get_exp_id() + '_run_exp.jsonnet')
     config = json.load(open(config_path))
     config['random_seed'] = seed
     config['numpy_seed'] = seed // 10
     config['pytorch_seed'] = seed // 100
-    json.dump(open(new_config_path, 'w'), config, indent=2)
+    json.dump(config, open(new_config_path, 'w'), indent=2)
     return new_config_path
 
 
 def run_train_exp(config_path, model_folder, include_package, device, seed=13370):
-    if not os.path.exists(model_folder):
-        os.makedirs(model_folder)
-    config_path = add_random_seed(config_path, model_folder, seed)
+    config_path = add_random_seed(config_path, seed)
     device_env = 'CUDA_VISIBLE_DEVICES={device}'.format(device=device)
     run_cmd = "{device} allennlp train -s {model} {config} --include-package {include}".format(device=device_env,
                                                                                                model=model_folder,
@@ -59,6 +57,7 @@ def run_train_exp(config_path, model_folder, include_package, device, seed=13370
                                                                                                include=include_package)
     run_cmd += " >/dev/null 2>&1"
     run_command(run_cmd)
+    run_command("mv %s %s" % (config_path, model_folder))
 
 
 def run_eval_exp(model_folder, test_data_path, include_package, device):
