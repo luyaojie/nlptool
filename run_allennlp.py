@@ -3,6 +3,7 @@
 # Created by Roger on 2019-08-20
 import argparse
 import os
+import random
 import random as py_random
 import subprocess
 
@@ -36,7 +37,21 @@ def get_run_device():
     return args.device[0]
 
 
-def run_train_exp(config_path, model_folder, include_package, device):
+def add_random_seed(config_path, model_folder, seed):
+    import json
+    new_config_path = os.path.join(model_folder, 'model.jsonnet')
+    config = json.load(open(config_path))
+    config['random_seed'] = seed
+    config['numpy_seed'] = seed // 10
+    config['pytorch_seed'] = seed // 100
+    json.dump(open(new_config_path, 'w'), config, indent=2)
+    return new_config_path
+
+
+def run_train_exp(config_path, model_folder, include_package, device, seed=13370):
+    if not os.path.exists(model_folder):
+        os.makedirs(model_folder)
+    config_path = add_random_seed(config_path, model_folder, seed)
     device_env = 'CUDA_VISIBLE_DEVICES={device}'.format(device=device)
     run_cmd = "{device} allennlp train -s {model} {config} --include-package {include}".format(device=device_env,
                                                                                                model=model_folder,
@@ -66,11 +81,13 @@ def add_argument(_parser):
 
 def main():
     for i in range(args.run_time_number):
+        random_seed = random.randint(10000, 99999)
         model_path = '_'.join([args.model, get_exp_id()])
         run_train_exp(config_path=args.config,
                       model_folder=model_path,
                       include_package=args.include_package,
-                      device=args.device)
+                      device=args.device,
+                      seed=random_seed)
         if args.test_data_path is not None:
             run_eval_exp(model_folder=model_path,
                          test_data_path=args.test_data_path,
