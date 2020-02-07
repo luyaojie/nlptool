@@ -29,8 +29,8 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser('Multi Process Run Shell')
-    parser.add_argument('-s', dest='shell', help='Shell File Name')
-    parser.add_argument('-n', dest='number', help='Process Number')
+    parser.add_argument('-s', dest='shell', type=str, help='Shell File Name')
+    parser.add_argument('-n', dest='number', type=int, help='Process Number')
     args = parser.parse_args()
 
     shell_file = args.shell
